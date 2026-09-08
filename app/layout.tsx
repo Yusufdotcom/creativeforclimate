@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./logo-theme.css";
 
 export const metadata: Metadata = {
   title: "Creative for Climate — Art that moves us",

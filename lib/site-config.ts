@@ -1,12 +1,6 @@
 /**
  * Public site configuration read from environment variables.
  * Safe development fallbacks keep local `npm run dev` working without a .env file.
- *
- * PRODUCTION PHASE (add later — do not wire secrets into the client bundle):
- * - Supabase / Postgres for artworks, pending orders, custom requests
- * - Private object storage for original artwork files
- * - Email / SMS notifications after manual payment review
- * - Admin authentication before exposing the operations panel
  */
 
 export const HORMUUD_RECIPIENT_NUMBER =
