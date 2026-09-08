@@ -1,10 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createReferenceNumber } from "../../lib/references";
-import { createServiceClient } from "../../lib/supabase/admin";
-import { isSupabaseConfigured } from "../../lib/supabase/env";
-import type { Order } from "../../lib/types";
+import { createReferenceNumber } from "@/lib/references";
+import { createServiceClient } from "@/lib/supabase/admin";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
+import type { Order } from "@/lib/types";
 
 export type OrderActionResult =
   | { ok: true; referenceNumber: string; message: string }

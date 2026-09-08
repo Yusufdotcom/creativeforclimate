@@ -1,0 +1,282 @@
+/* Admin visual system — extends Creative for Climate brand tokens */
+.admin-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 8%, #e8c46955 0, transparent 36%),
+    radial-gradient(circle at 88% 0%, #ed633d22 0, transparent 28%),
+    linear-gradient(180deg, #f7f3ea 0%, var(--cream) 40%, #e8eadc 100%);
+}
+
+.admin-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 4vw;
+  border-bottom: 1px solid var(--line);
+  background: #f5f1e8cc;
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-brand small {
+  display: block;
+  font: 10px var(--mono);
+  letter-spacing: 0.08em;
+  color: #625f56;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-nav a {
+  font: 12px var(--mono);
+  letter-spacing: 0.04em;
+  padding-bottom: 4px;
+  border-bottom: 1px solid transparent;
+}
+
+.admin-nav a:hover,
+.admin-nav a[aria-current="page"] {
+  color: var(--orange);
+  border-bottom-color: var(--orange);
+}
+
+.admin-user {
+  font: 11px var(--mono);
+  color: #625f56;
+}
+
+.admin-main {
+  padding: 42px 4vw 80px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.admin-main h1 {
+  font: 500 clamp(2.6rem, 5vw, 4.6rem) / 0.95 var(--serif);
+  letter-spacing: -0.06em;
+  margin: 0 0 10px;
+}
+
+.admin-main .lede {
+  max-width: 540px;
+  color: #4d5248;
+  margin: 0 0 34px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 34px;
+}
+
+.admin-stat {
+  border: 1px solid var(--ink);
+  background: #fffaf0;
+  padding: 18px;
+  box-shadow: 6px 6px 0 #ed633d33;
+}
+
+.admin-stat b {
+  font: 500 42px / 1 var(--serif);
+  display: block;
+}
+
+.admin-stat span {
+  font: 10px var(--mono);
+  letter-spacing: 0.06em;
+}
+
+.admin-panel {
+  border: 1px solid var(--ink);
+  background: #fffaf0;
+  padding: 22px;
+  margin-bottom: 22px;
+  box-shadow: 8px 8px 0 #18271f14;
+}
+
+.admin-panel h2 {
+  font: 500 28px / 1 var(--serif);
+  margin: 0 0 16px;
+  letter-spacing: -0.04em;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.admin-table th {
+  text-align: left;
+  font: 10px var(--mono);
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--line);
+  padding: 8px 6px;
+}
+
+.admin-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 12px 6px;
+  vertical-align: top;
+}
+
+.admin-table .meta {
+  display: block;
+  color: #625f56;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-actions button,
+.admin-form button,
+.login-card button {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--cream);
+  padding: 9px 12px;
+  font: 11px var(--mono);
+}
+
+.admin-actions button.secondary,
+.admin-form button.secondary {
+  background: transparent;
+  color: var(--ink);
+}
+
+.admin-form {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-form.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.admin-form label {
+  font: 11px var(--mono);
+  display: grid;
+  gap: 6px;
+}
+
+.admin-form .full {
+  grid-column: 1 / -1;
+}
+
+.pill {
+  display: inline-block;
+  font: 10px var(--mono);
+  padding: 3px 7px;
+  border: 1px solid var(--line);
+  background: #f0ebe0;
+}
+
+.pill.warn {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.pill.ok {
+  border-color: var(--moss);
+  color: #45562f;
+}
+
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 80% 20%, #ed633d33, transparent 35%),
+    radial-gradient(circle at 10% 80%, #c7cf6688, transparent 40%),
+    var(--cream);
+}
+
+.login-card {
+  width: min(440px, 100%);
+  background: #fffaf0;
+  border: 1px solid var(--ink);
+  box-shadow: 12px 12px 0 var(--orange);
+  padding: 36px 28px;
+}
+
+.login-card h1 {
+  font: 500 42px / 0.95 var(--serif);
+  margin: 12px 0 8px;
+  letter-spacing: -0.05em;
+}
+
+.login-card p {
+  color: #625f56;
+  line-height: 1.5;
+  margin: 0 0 22px;
+}
+
+.login-card form {
+  display: grid;
+  gap: 14px;
+}
+
+.form-error {
+  color: #a33a1f;
+  font-size: 12px;
+  margin: 0;
+}
+
+.admin-note {
+  font-size: 12px;
+  color: #625f56;
+  border-left: 2px solid var(--orange);
+  padding-left: 10px;
+  margin: 0 0 18px;
+}
+
+.upload-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+@media (max-width: 900px) {
+  .admin-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .admin-form.grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-top {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

@@ -38,9 +38,43 @@ footer { background: #24754f; }
 .modal-backdrop { background: #16432fdf; }
 .modal { box-shadow: 10px 10px 0 #efae47; }
 
+.field-note {
+  display: grid;
+  grid-template-columns: 1.08fr .92fr;
+  gap: 8vw;
+  align-items: center;
+  padding: 105px 8vw;
+  background: #fff9ed;
+}
+
+.field-note-image {
+  aspect-ratio: 1.32 / 1;
+  overflow: hidden;
+  box-shadow: 14px 14px 0 #efae47;
+}
+
+.field-note-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.field-note-copy h2 {
+  font: 500 clamp(3.1rem, 5.5vw, 5.8rem) / .93 var(--serif);
+  letter-spacing: -.065em;
+  margin: 0;
+}
+
+.field-note-copy h2 em { color: var(--orange); }
+.field-note-copy > p:last-child { max-width: 390px; line-height: 1.65; margin: 29px 0 0; }
+
 @media (max-width: 720px) {
   .brand-logo { width: 145px; height: 64px; }
   .brand-logo img { transform: scale(1.06) translateY(6px); }
   .hero-art { box-shadow: 10px 10px 0 #efae47; }
   .modal { box-shadow: 5px 5px 0 #efae47; }
+  .field-note { grid-template-columns: 1fr; gap: 45px; padding: 75px 6vw; }
+  .field-note-image { box-shadow: 9px 9px 0 #efae47; }
 }

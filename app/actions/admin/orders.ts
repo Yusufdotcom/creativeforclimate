@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireAdminSession } from "../../../lib/admin-auth";
-import { createServiceClient } from "../../../lib/supabase/admin";
-import type { OrderStatus, PaymentStatus } from "../../../lib/types";
+import { requireAdminSession } from "@/lib/admin-auth";
+import { createServiceClient } from "@/lib/supabase/admin";
+import type { OrderStatus, PaymentStatus } from "@/lib/types";
 
 function revalidateAdmin() {
   revalidatePath("/");

@@ -1,10 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireAdminSession } from "../../../lib/admin-auth";
-import { createServiceClient } from "../../../lib/supabase/admin";
-import { STORAGE_BUCKET_ORIGINALS, STORAGE_BUCKET_PREVIEWS } from "../../../lib/supabase/env";
-import type { InventoryStatus, PublishStatus } from "../../../lib/types";
+import { requireAdminSession } from "@/lib/admin-auth";
+import { createServiceClient } from "@/lib/supabase/admin";
+import { STORAGE_BUCKET_ORIGINALS, STORAGE_BUCKET_PREVIEWS } from "@/lib/supabase/env";
+import type { InventoryStatus, PublishStatus } from "@/lib/types";
 
 function revalidateArt() {
   revalidatePath("/");

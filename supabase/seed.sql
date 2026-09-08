@@ -119,3 +119,40 @@ values
   ('site.contact_city', 'en', 'Mogadishu, Somalia', now())
 on conflict (key, locale) do update
 set value = excluded.value, published_at = excluded.published_at;
+
+-- Initial public collection: supplied original youth artworks, served from the website's
+-- protected preview layer until private originals are uploaded to Supabase Storage.
+update public.artworks
+set
+  title = 'Ocean Without Plastic',
+  medium = 'Acrylic on canvas',
+  dimensions = 'Original artwork',
+  story = 'A young artist''s call to protect ocean life: a sea turtle swims through a bottle-shaped sea beneath the words ''Stop Pollution.''',
+  price = 65,
+  inventory_status = 'available',
+  publish_status = 'published',
+  preview_path = '/artworks/ocean-without-plastic.jpeg',
+  preview_tone = 'ocean',
+  sort_order = 1
+where id = 'b1111111-1111-4111-8111-111111111101';
+
+update public.artworks
+set
+  title = 'Water Is Life',
+  medium = 'Acrylic on canvas',
+  dimensions = 'Original artwork',
+  story = 'A climate story in two landscapes: polluted water on one side, drought on the other—and a young person carrying hope between them.',
+  price = 75,
+  inventory_status = 'available',
+  publish_status = 'published',
+  preview_path = '/artworks/water-is-life.jpeg',
+  preview_tone = 'water',
+  sort_order = 2
+where id = 'b1111111-1111-4111-8111-111111111102';
+
+update public.artworks
+set publish_status = 'draft'
+where id in (
+  'b1111111-1111-4111-8111-111111111103',
+  'b1111111-1111-4111-8111-111111111104'
+);

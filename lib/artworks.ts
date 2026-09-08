@@ -1,83 +1,73 @@
-import { createServiceClient } from "./supabase/admin";
+import { createClient } from "@supabase/supabase-js";
+import { createClient as createServerSupabase } from "./supabase/server";
 import { isSupabaseConfigured, STORAGE_BUCKET_PREVIEWS } from "./supabase/env";
-import type { Artwork, PublicArtwork } from "./types";
+import type { PublicArtwork } from "./types";
 
 export const FALLBACK_ARTWORKS: PublicArtwork[] = [
   {
     id: "b1111111-1111-4111-8111-111111111101",
-    title: "After the Rain",
-    artist: "Khadra Hussein Ali",
-    medium: "Mixed media on canvas",
-    size: "80 × 100 cm",
-    price: 180,
+    title: "Ocean Without Plastic",
+    artist: "Creative for Climate Youth Artist",
+    medium: "Acrylic on canvas",
+    size: "Original artwork",
+    price: 65,
     currency: "USD",
     status: "Available",
     inventoryStatus: "available",
-    tone: "rain",
-    story: "A love letter to the first green that returns after Mogadishu's rain.",
-    previewUrl: null,
+    tone: "ocean",
+    story: "A young artist's call to protect ocean life: a sea turtle swims through a bottle-shaped sea beneath the words ‘Stop Pollution.’",
+    previewUrl: "/artworks/ocean-without-plastic.jpeg",
   },
   {
     id: "b1111111-1111-4111-8111-111111111102",
-    title: "Hilaac / Lightning",
-    artist: "Khadra Hussein Ali",
-    medium: "Acrylic & collage",
-    size: "60 × 80 cm",
-    price: 145,
+    title: "Water Is Life",
+    artist: "Creative for Climate Youth Artist",
+    medium: "Acrylic on canvas",
+    size: "Original artwork",
+    price: 75,
     currency: "USD",
     status: "Available",
     inventoryStatus: "available",
-    tone: "lightning",
-    story: "Electric possibility—young people turning climate anxiety into collective action.",
-    previewUrl: null,
-  },
-  {
-    id: "b1111111-1111-4111-8111-111111111103",
-    title: "Seeds We Carry",
-    artist: "Khadra Hussein Ali",
-    medium: "Textile & ink",
-    size: "50 × 70 cm",
-    price: 120,
-    currency: "USD",
-    status: "Reserved",
-    inventoryStatus: "reserved",
-    story: "A portrait of girls holding stories, seeds, and futures in their hands.",
-    tone: "seeds",
-    previewUrl: null,
-  },
-  {
-    id: "b1111111-1111-4111-8111-111111111104",
-    title: "Blue Horizon",
-    artist: "Khadra Hussein Ali",
-    medium: "Digital print, edition of 20",
-    size: "A2",
-    price: 55,
-    currency: "USD",
-    status: "Available",
-    inventoryStatus: "available",
-    tone: "blue",
-    story: "The Indian Ocean as witness, provider, and a horizon worth protecting.",
-    previewUrl: null,
+    tone: "water",
+    story: "A climate story in two landscapes: polluted water on one side, drought on the other—and a young person carrying hope between them.",
+    previewUrl: "/artworks/water-is-life.jpeg",
   },
 ];
 
+type GalleryRow = {
+  id: string;
+  title: string;
+  medium: string;
+  dimensions: string;
+  story: string;
+  price: number | string;
+  currency: string;
+  inventory_status: "available" | "reserved";
+  preview_path: string | null;
+  preview_tone: string | null;
+  artists: { display_name: string } | { display_name: string }[] | null;
+};
+
 function previewPublicUrl(path: string | null | undefined): string | null {
   if (!path) return null;
+  if (path.startsWith("/")) return path;
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "");
   if (!base) return null;
   return `${base}/storage/v1/object/public/${STORAGE_BUCKET_PREVIEWS}/${path.replace(/^\//, "")}`;
 }
 
-export function toPublicArtwork(row: Artwork): PublicArtwork | null {
-  if (row.inventory_status !== "available" && row.inventory_status !== "reserved") {
-    return null;
-  }
-  const artistRelation = Array.isArray(row.artists) ? row.artists[0] : row.artists;
+function artistName(artists: GalleryRow["artists"]): string {
+  if (!artists) return "Creative for Climate";
+  if (Array.isArray(artists)) return artists[0]?.display_name || "Creative for Climate";
+  return artists.display_name || "Creative for Climate";
+}
+
+function mapRow(row: GalleryRow): PublicArtwork {
   return {
     id: row.id,
     title: row.title,
-    artist: artistRelation?.display_name || "Creative for Climate",
+    artist: artistName(row.artists),
     medium: row.medium,
     size: row.dimensions,
     price: Number(row.price),
@@ -94,16 +84,26 @@ export function toPublicArtwork(row: Artwork): PublicArtwork | null {
  * Public gallery query — never selects original_path.
  */
 export async function getPublicArtworks(): Promise<PublicArtwork[]> {
-  if (!isSupabaseConfigured() || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (!isSupabaseConfigured()) {
     return FALLBACK_ARTWORKS;
   }
 
   try {
-    const supabase = createServiceClient();
-    const { data, error } = await supabase
+    let client;
+    if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      client = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY,
+        { auth: { persistSession: false, autoRefreshToken: false } }
+      );
+    } else {
+      client = await createServerSupabase();
+    }
+
+    const { data, error } = await client
       .from("artworks")
       .select(
-        "id, artist_id, title, medium, dimensions, story, price, currency, inventory_status, publish_status, preview_path, preview_tone, sort_order, created_at, updated_at, artists(display_name)"
+        "id, title, medium, dimensions, story, price, currency, inventory_status, preview_path, preview_tone, artists(display_name)"
       )
       .eq("publish_status", "published")
       .in("inventory_status", ["available", "reserved"])
@@ -114,10 +114,7 @@ export async function getPublicArtworks(): Promise<PublicArtwork[]> {
       return FALLBACK_ARTWORKS;
     }
 
-    // Supabase infers relation selections as arrays; this query returns one artist per artwork.
-    return (data as unknown as Artwork[])
-      .map(toPublicArtwork)
-      .filter((item): item is PublicArtwork => Boolean(item));
+    return (data as GalleryRow[]).map(mapRow);
   } catch (error) {
     console.warn("[gallery] Supabase unavailable; using fallback seed.", error);
     return FALLBACK_ARTWORKS;

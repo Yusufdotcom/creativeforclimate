@@ -1,9 +1,21 @@
 import type { NextConfig } from "next";
 
+const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+  : undefined;
+
 const nextConfig: NextConfig = {
-  // Manual Hormuud payment only for now — no payment provider integration.
-  // PRODUCTION PHASE: add image remotePatterns when serving preview assets
-  // from Supabase Storage or another CDN.
+  images: {
+    remotePatterns: supabaseHost
+      ? [
+          {
+            protocol: "https",
+            hostname: supabaseHost,
+            pathname: "/storage/v1/object/public/**",
+          },
+        ]
+      : [],
+  },
 };
 
 export default nextConfig;

@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createReferenceNumber } from "../../lib/references";
-import { createServiceClient } from "../../lib/supabase/admin";
-import { isSupabaseConfigured } from "../../lib/supabase/env";
+import { createReferenceNumber } from "@/lib/references";
+import { createServiceClient } from "@/lib/supabase/admin";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 export type CustomRequestResult =
   | { ok: true; referenceNumber: string; message: string }
