@@ -1,8 +1,7 @@
 "use client";
 
-import { FormEvent, useMemo, useState, useTransition } from "react";
-import { submitCustomRequest } from "@/app/actions/custom-requests";
-import { submitHormuudOrder } from "@/app/actions/orders";
+import { FormEvent, useMemo, useState } from "react";
+import { EVENTS } from "@/lib/events";
 import type { PublicArtwork } from "@/lib/types";
 import { Mark } from "./Mark";
 
@@ -10,7 +9,12 @@ type Props = {
   artworks: PublicArtwork[];
   contactEmail: string;
   hormuudNumber: string;
+  whatsappNumber: string;
 };
+
+function openWhatsApp(number: string, message: string) {
+  window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+}
 
 function ArtCard({ art, onSelect }: { art: PublicArtwork; onSelect: (a: PublicArtwork) => void }) {
   return (
@@ -45,7 +49,7 @@ function ArtCard({ art, onSelect }: { art: PublicArtwork; onSelect: (a: PublicAr
   );
 }
 
-export default function HomeExperience({ artworks: initialArtworks, contactEmail, hormuudNumber }: Props) {
+export default function HomeExperience({ artworks: initialArtworks, contactEmail, hormuudNumber, whatsappNumber }: Props) {
   const [menu, setMenu] = useState(false);
   const [selected, setSelected] = useState<PublicArtwork | null>(null);
   const [payment, setPayment] = useState<PublicArtwork | null>(null);
@@ -55,7 +59,6 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
   const [requestResult, setRequestResult] = useState<{ referenceNumber: string; message: string } | null>(null);
   const [requestError, setRequestError] = useState<string | null>(null);
   const [artworks, setArtworks] = useState(initialArtworks);
-  const [pending, startTransition] = useTransition();
 
   const firstAvailable = useMemo(
     () => artworks.find((a) => a.inventoryStatus === "available") || artworks[0] || null,
@@ -65,37 +68,21 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
   const onSubmitOrder = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!payment) return;
-    setOrderError(null);
     const formData = new FormData(e.currentTarget);
-    formData.set("artworkId", payment.id);
-    startTransition(async () => {
-      const result = await submitHormuudOrder(formData);
-      if (!result.ok) {
-        setOrderError(result.error);
-        return;
-      }
-      setArtworks((items) =>
-        items.map((item) =>
-          item.id === payment.id
-            ? { ...item, status: "Reserved", inventoryStatus: "reserved" }
-            : item
-        )
-      );
-      setOrderResult({ referenceNumber: result.referenceNumber, message: result.message });
+    openWhatsApp(whatsappNumber, `Salaam Creative for Climate!\n\nI would like to buy an artwork.\n\nArtwork: ${payment.title}\nArtist: ${payment.artist}\nPrice: $${payment.price} ${payment.currency}\nHormuud payment number: ${hormuudNumber}\nMy Hormuud number: ${String(formData.get("buyerPhone") || "")}\nEmail: ${String(formData.get("buyerEmail") || "Not provided")}\n\nI have completed payment / would like payment instructions. Please verify my order manually.`);
+    setOrderResult({
+      referenceNumber: "WHATSAPP",
+      message: "Your WhatsApp message has opened. Our team will manually confirm payment and availability before reserving the artwork.",
     });
   };
 
   const onSubmitRequest = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setRequestError(null);
     const formData = new FormData(e.currentTarget);
-    startTransition(async () => {
-      const result = await submitCustomRequest(formData);
-      if (!result.ok) {
-        setRequestError(result.error);
-        return;
-      }
-      setRequestResult({ referenceNumber: result.referenceNumber, message: result.message });
+    openWhatsApp(whatsappNumber, `Salaam Creative for Climate!\n\nI would like to request custom art.\n\nWhat I want: ${String(formData.get("requestedArtwork") || "")}\nTheme/message: ${String(formData.get("themeMessage") || "")}\nPreferred size: ${String(formData.get("preferredSize") || "")}\nStyle: ${String(formData.get("style") || "")}\nBudget: $${String(formData.get("budget") || "Not stated")}\nDeadline: ${String(formData.get("deadline") || "Not stated")}\nName: ${String(formData.get("name") || "")}\nPhone: ${String(formData.get("phone") || "")}\nEmail: ${String(formData.get("email") || "Not provided")}`);
+    setRequestResult({
+      referenceNumber: "WHATSAPP",
+      message: "Your WhatsApp message has opened. We will follow up to discuss the idea, timing and price.",
     });
   };
 
@@ -112,10 +99,8 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
           <a href="#about">About</a>
           <a href="#programs">Programs</a>
           <a href="#gallery">Gallery</a>
+          <a href="#events">Events</a>
           <a href="#contact">Connect</a>
-          <a className="admin-link" href="/admin/login">
-            Admin
-          </a>
         </div>
       </nav>
 
@@ -140,18 +125,19 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
           </div>
         </div>
         <div className="hero-art" onContextMenu={(e) => e.preventDefault()}>
-          <div className="sun" />
+          {/* Sample editorial photography — replace with Creative for Climate campaign imagery when available. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="hero-photo" src="https://images.unsplash.com/photo-1473445361085-b9a07f55608b?auto=format&fit=crop&w=1600&q=85" alt="Sunlight filtering through a green forest canopy." />
           <div className="hero-watermark">
-            CREATIVE FOR CLIMATE
+            EDITORIAL NOTE / 01
             <br />
-            CREATIVE FOR CLIMATE
+            CLIMATE IS CULTURE
             <br />
-            CREATIVE FOR CLIMATE
+            CULTURE IS ACTION
           </div>
           <p>
-            Dreaming in
-            <br />
-            green since 2025.
+            A future worth<br />
+            making visible.
           </p>
         </div>
         <div className="scroll">
@@ -275,6 +261,8 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
 
       <section className="custom">
         <div className="custom-visual">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="custom-art-photo" src="/artworks/ocean-without-plastic.jpeg" alt="Ocean Without Plastic, a Creative for Climate youth artwork." />
           <span>
             YOUR IDEA
             <br />
@@ -302,10 +290,35 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
         </div>
       </section>
 
+      <section id="events" className="events">
+        <div className="events-heading">
+          <div>
+            <p className="section-no">06 / WHAT&apos;S HAPPENING</p>
+            <h2>Events, campaigns<br />&amp; <em>field notes.</em></h2>
+          </div>
+          <p>Our living noticeboard for new workshops, community action and publishing from Creative for Climate.</p>
+        </div>
+        <div className="event-grid">
+          {EVENTS.map((event) => (
+            <article className={`event-card${event.featured ? " featured-event" : ""}`} key={event.title}>
+              {/* Sample image from Unsplash — replace before publishing a specific event. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={event.image} alt={event.alt} />
+              <div className="event-card-copy"><span>{event.type}</span><h3>{event.title}</h3><p>{event.description}</p></div>
+            </article>
+          ))}
+          <article className="event-card publication-event">
+            <div className="publication-mark">C + C</div>
+            <div className="event-card-copy"><span>PUBLICATION / 2026</span><h3>Our first field notes.</h3><p>Stories, artworks and reflections from a growing climate-creative community.</p></div>
+          </article>
+        </div>
+        <a className="text-link events-link" href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Salaam Creative for Climate! I would like to share or ask about an event, campaign or publication.")}`} target="_blank" rel="noreferrer">Ask about an event <span>↗</span></a>
+      </section>
+
       <section className="partners">
-        <p className="section-no">06 / BETTER TOGETHER</p>
+        <p className="section-no">07 / BETTER TOGETHER</p>
         <h2>Bring climate creativity to your school, organisation or community.</h2>
-        <a className="button dark" href="#contact">
+        <a className="button dark" href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Salaam Creative for Climate! I would like to discuss a partnership.")}`} target="_blank" rel="noreferrer">
           Partner with us <span>↗</span>
         </a>
       </section>
@@ -328,11 +341,10 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
             <b>Khadra Hussein Ali</b>
           </p>
           <p>
-            © 2025 Creative for Climate.
+            © 2026 Creative for Climate.
             <br />
             All artwork rights reserved.
           </p>
-          <a href="/admin/login">Private admin access</a>
         </div>
       </footer>
 
@@ -417,8 +429,7 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
                   Reference <b>{orderResult.referenceNumber}</b>
                 </p>
                 <p>
-                  Your order is <b>pending manual payment verification</b>. {orderResult.message} Your artwork is temporarily
-                  reserved.
+                  {orderResult.message}
                 </p>
                 <button
                   className="button dark"
@@ -447,8 +458,8 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
                   <p>Return here to tell us you have paid.</p>
                 </div>
                 <p className="notice">
-                  This is a manual payment flow. Clicking “Waan bixiyay” creates a pending order only. Payment is not automatically
-                  verified; an administrator will review your order before confirmation.
+                  This is a manual payment flow. Clicking “Waan bixiyay” opens WhatsApp with your order details. Payment is never
+                  automatically verified; Creative for Climate will confirm it manually.
                 </p>
                 <form onSubmit={onSubmitOrder}>
                   <label>
@@ -463,9 +474,8 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
                     Email <small>(optional)</small>
                     <input placeholder="you@email.com" type="email" name="buyerEmail" />
                   </label>
-                  {orderError ? <p className="form-error">{orderError}</p> : null}
-                  <button className="button dark" type="submit" disabled={pending}>
-                    {pending ? "Saving…" : "Waan bixiyay"} <span>→</span>
+                  <button className="button dark" type="submit">
+                    Waan bixiyay on WhatsApp <span>→</span>
                   </button>
                 </form>
               </>
@@ -551,9 +561,8 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
                     Your request will be reviewed by Khadra or a suitable artist. We will contact you to discuss feasibility, price
                     and timeline before anything is confirmed.
                   </p>
-                  {requestError ? <p className="form-error">{requestError}</p> : null}
-                  <button className="button dark" disabled={pending}>
-                    {pending ? "Sending…" : "Send my idea"} <span>↗</span>
+                  <button className="button dark">
+                    Send on WhatsApp <span>↗</span>
                   </button>
                 </form>
               </>

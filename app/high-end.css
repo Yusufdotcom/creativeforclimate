@@ -1,0 +1,82 @@
+/* Editorial polish and real-image treatment for the public-facing experience. */
+.hero-art {
+  background: #173e2e;
+  box-shadow: 18px 18px 0 var(--orange);
+}
+
+.hero-art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  left: 0;
+  bottom: 0;
+  border-radius: 0;
+  transform: none;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(19, 54, 38, .06), rgba(19, 54, 38, .86));
+}
+
+.hero-art::after { display: none; }
+.hero-photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(.76) contrast(1.06); }
+.hero-art p, .hero-watermark { z-index: 2; }
+.hero-art p { max-width: 310px; color: #fffdf8; text-shadow: 0 2px 20px rgba(0,0,0,.2); }
+.hero-watermark { color: rgba(255,253,248,.85); bottom: 152px; }
+
+/* Gallery artwork is the visual, not the former abstract placeholders. */
+.art-image::before, .art-image::after, .detail-image::before, .detail-image::after { display: none; }
+.art-image, .detail-image { background: #e9e2d3; }
+.preview-photo { object-position: center; transition: transform .7s cubic-bezier(.2,.8,.2,1); }
+.art-card:hover .preview-photo { transform: scale(1.035); }
+.art-card { outline-offset: 8px; }
+
+.custom-visual { background: #173e2e; isolation: isolate; }
+.custom-visual::before, .custom-visual::after { display: none; }
+.custom-art-photo { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; filter: saturate(.8) contrast(.95) brightness(.72); }
+.custom-visual span { color: #fffdf8; text-shadow: 0 2px 18px rgba(0,0,0,.35); }
+
+.field-note { border-top: 1px solid rgba(36,117,79,.18); }
+
+.events { padding: 135px 8vw; background: #fffdf8; }
+.events-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 4vw; margin-bottom: 58px; }
+.events-heading h2 { margin: 0; font: 500 clamp(3.15rem,5.8vw,6rem)/.92 var(--serif); letter-spacing: -.07em; }
+.events-heading h2 em { color: var(--orange); }
+.events-heading > p { width: min(300px, 100%); margin: 0 0 7px; font-size: 14px; line-height: 1.6; }
+.event-grid { display: grid; grid-template-columns: 1.2fr .9fr .9fr; gap: 18px; }
+.event-card { position: relative; min-height: 440px; overflow: hidden; background: #e8f0dd; display: flex; align-items: flex-end; isolation: isolate; }
+.event-card::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, transparent 26%, rgba(18,53,38,.9) 100%); }
+.event-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2,.8,.2,1); }
+.event-card:hover img { transform: scale(1.04); }
+.event-card-copy { position: relative; z-index: 2; padding: 26px; color: #fffdf8; }
+.event-card-copy span { font: 10px var(--mono); letter-spacing: .08em; color: #f7c667; }
+.event-card-copy h3 { margin: 12px 0 9px; font: 500 32px/.98 var(--serif); letter-spacing: -.04em; }
+.event-card-copy p { margin: 0; max-width: 280px; font-size: 13px; line-height: 1.45; }
+.publication-event { display: block; padding: 25px; background: #24754f; }
+.publication-event::after { display: none; }
+.publication-event .event-card-copy { position: absolute; left: 0; right: 0; bottom: 0; }
+.publication-mark { position: relative; z-index: 2; color: #efae47; font: 500 clamp(4.5rem,10vw,9rem)/.8 var(--serif); letter-spacing: -.12em; }
+.events-link { display: table; margin-top: 42px; }
+
+/* The commission form is intentionally compact enough to breathe in its modal. */
+.request-modal { max-height: calc(100vh - 38px); overflow-y: auto; }
+.request-modal h2 { font-size: clamp(2.45rem, 3.7vw, 3.5rem); line-height: .94; margin-bottom: 0; padding-bottom: 34px; }
+.request-modal form { gap: 13px; margin-top: 0; }
+.request-modal textarea { min-height: 64px; }
+.request-modal .notice { margin: 12px 0 7px !important; }
+
+footer .brand-logo { margin-bottom: 8px; }
+
+@media (max-width: 720px) {
+  .hero-art { box-shadow: 10px 10px 0 var(--orange); }
+  .hero-watermark { bottom: 108px; }
+  .events { padding: 82px 6vw; }
+  .events-heading { display: block; margin-bottom: 38px; }
+  .events-heading > p { margin-top: 23px; }
+  .event-grid { grid-template-columns: 1fr; gap: 14px; }
+  .event-card { min-height: 360px; }
+  .request-modal { max-height: calc(100vh - 20px); padding: 34px 22px; }
+  .request-modal h2 { font-size: 2.7rem; padding-bottom: 26px; }
+  .request-modal form { margin-top: 0; }
+  .request-modal textarea { min-height: 62px; }
+}

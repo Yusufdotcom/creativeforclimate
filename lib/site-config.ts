@@ -9,6 +9,9 @@ export const HORMUUD_RECIPIENT_NUMBER =
 export const CONTACT_EMAIL =
   process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "hello@creativeforclimate.so";
 
+export const WHATSAPP_NUMBER =
+  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || "252619199396";
+
 /**
  * Phase 2 marketplace flag. Read server-side only (no NEXT_PUBLIC_ prefix).
  * Public artist onboarding stays disabled while this is false.
