@@ -19,7 +19,7 @@
 }
 
 .hero-art::after { display: none; }
-.hero-photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(.76) contrast(1.06); }
+.hero-photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 58% 42%; filter: saturate(.82) contrast(1.04); }
 .hero-art p, .hero-watermark { z-index: 2; }
 .hero-art p { max-width: 310px; color: #fffdf8; text-shadow: 0 2px 20px rgba(0,0,0,.2); }
 .hero-watermark { color: rgba(255,253,248,.85); bottom: 152px; }
@@ -43,7 +43,7 @@
 .events-heading h2 { margin: 0; font: 500 clamp(3.15rem,5.8vw,6rem)/.92 var(--serif); letter-spacing: -.07em; }
 .events-heading h2 em { color: var(--orange); }
 .events-heading > p { width: min(300px, 100%); margin: 0 0 7px; font-size: 14px; line-height: 1.6; }
-.event-grid { display: grid; grid-template-columns: 1.2fr .9fr .9fr; gap: 18px; }
+.event-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 .event-card { position: relative; min-height: 440px; overflow: hidden; background: #e8f0dd; display: flex; align-items: flex-end; isolation: isolate; }
 .event-card::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, transparent 26%, rgba(18,53,38,.9) 100%); }
 .event-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2,.8,.2,1); }
@@ -57,6 +57,30 @@
 .publication-event .event-card-copy { position: absolute; left: 0; right: 0; bottom: 0; }
 .publication-mark { position: relative; z-index: 2; color: #efae47; font: 500 clamp(4.5rem,10vw,9rem)/.8 var(--serif); letter-spacing: -.12em; }
 .events-link { display: table; margin-top: 42px; }
+
+.partners-layout {
+  display: grid;
+  grid-template-columns: 1fr min(420px, 38vw);
+  gap: 5vw;
+  align-items: end;
+}
+.partners-layout h2 { margin: 0 0 45px; }
+.partners-photo {
+  transform: rotate(2deg);
+  box-shadow: 14px 14px 0 var(--orange);
+  border: 1px solid var(--ink);
+  overflow: hidden;
+  background: #173e2e;
+}
+.partners-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  object-fit: cover;
+  object-position: center 35%;
+  filter: saturate(.88) contrast(1.03);
+}
 
 /* The commission form is intentionally compact enough to breathe in its modal. */
 .request-modal { max-height: calc(100vh - 38px); overflow-y: auto; }
@@ -74,6 +98,8 @@ footer .brand-logo { margin-bottom: 8px; }
   .events-heading { display: block; margin-bottom: 38px; }
   .events-heading > p { margin-top: 23px; }
   .event-grid { grid-template-columns: 1fr; gap: 14px; }
+  .partners-layout { grid-template-columns: 1fr; gap: 38px; }
+  .partners-photo { transform: rotate(1deg); box-shadow: 9px 9px 0 var(--orange); }
   .event-card { min-height: 360px; }
   .request-modal { max-height: calc(100vh - 20px); padding: 34px 22px; }
   .request-modal h2 { font-size: 2.7rem; padding-bottom: 26px; }

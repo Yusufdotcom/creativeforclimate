@@ -2,6 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { EVENTS } from "@/lib/events";
+import { SITE_PHOTOS } from "@/lib/site-photos";
 import type { PublicArtwork } from "@/lib/types";
 import { Mark } from "./Mark";
 
@@ -125,19 +126,19 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
           </div>
         </div>
         <div className="hero-art" onContextMenu={(e) => e.preventDefault()}>
-          {/* Sample editorial photography — replace with Creative for Climate campaign imagery when available. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="hero-photo" src="https://images.unsplash.com/photo-1473445361085-b9a07f55608b?auto=format&fit=crop&w=1600&q=85" alt="Sunlight filtering through a green forest canopy." />
+          <img className="hero-photo" src={SITE_PHOTOS.hero.src} alt={SITE_PHOTOS.hero.alt} />
           <div className="hero-watermark">
-            EDITORIAL NOTE / 01
+            CREATIVE FOR CLIMATE
             <br />
             CLIMATE IS CULTURE
             <br />
             CULTURE IS ACTION
           </div>
           <p>
-            A future worth<br />
-            making visible.
+            Dreaming in
+            <br />
+            green since 2025.
           </p>
         </div>
         <div className="scroll">
@@ -226,12 +227,12 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
         <div className="field-note-image">
           {/* Community documentation image supplied by Creative for Climate. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/stories/world-environment-day-2026.jpg" alt="Young climate leaders presenting environmental artwork at a World Environment Day event." />
+          <img src={SITE_PHOTOS.fieldNote.src} alt={SITE_PHOTOS.fieldNote.alt} />
         </div>
         <div className="field-note-copy">
           <p className="section-no">IN THE COMMUNITY / 2026</p>
           <h2 id="field-note-heading">Young voices,<br /><em>visible change.</em></h2>
-          <p>Celebrating World Environment Day through art, conversation and youth-led climate imagination in Mogadishu.</p>
+          <p>Young people turning climate questions into drawings, stories and shared pride — rooted in schools and communities across Somalia.</p>
         </div>
       </section>
 
@@ -301,7 +302,6 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
         <div className="event-grid">
           {EVENTS.map((event) => (
             <article className={`event-card${event.featured ? " featured-event" : ""}`} key={event.title}>
-              {/* Sample image from Unsplash — replace before publishing a specific event. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={event.image} alt={event.alt} />
               <div className="event-card-copy"><span>{event.type}</span><h3>{event.title}</h3><p>{event.description}</p></div>
@@ -317,10 +317,18 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
 
       <section className="partners">
         <p className="section-no">07 / BETTER TOGETHER</p>
-        <h2>Bring climate creativity to your school, organisation or community.</h2>
-        <a className="button dark" href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Salaam Creative for Climate! I would like to discuss a partnership.")}`} target="_blank" rel="noreferrer">
-          Partner with us <span>↗</span>
-        </a>
+        <div className="partners-layout">
+          <div>
+            <h2>Bring climate creativity to your school, organisation or community.</h2>
+            <a className="button dark" href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Salaam Creative for Climate! I would like to discuss a partnership.")}`} target="_blank" rel="noreferrer">
+              Partner with us <span>↗</span>
+            </a>
+          </div>
+          <div className="partners-photo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={SITE_PHOTOS.partners.src} alt={SITE_PHOTOS.partners.alt} />
+          </div>
+        </div>
       </section>
 
       <footer id="contact">
