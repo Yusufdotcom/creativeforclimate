@@ -91,6 +91,20 @@ export async function uploadArtworkAsset(formData: FormData) {
     throw new Error("Choose a file to upload");
   }
 
+  const maxSize = kind === "preview" ? 5 * 1024 * 1024 : 50 * 1024 * 1024;
+  const allowedTypes = new Set([
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    ...(kind === "original" ? ["image/tiff", "application/pdf"] : []),
+  ]);
+  if (file.size > maxSize) {
+    throw new Error(`File exceeds the ${kind === "preview" ? "5 MiB" : "50 MiB"} upload limit.`);
+  }
+  if (!allowedTypes.has(file.type)) {
+    throw new Error("Unsupported file type.");
+  }
+
   const bucket = kind === "preview" ? STORAGE_BUCKET_PREVIEWS : STORAGE_BUCKET_ORIGINALS;
   const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
   const path = `${artworkId}/${kind}-${Date.now()}.${ext}`;

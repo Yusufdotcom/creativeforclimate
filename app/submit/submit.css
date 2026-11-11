@@ -1,0 +1,134 @@
+/* Public artist submission page — uses the site's brand tokens */
+.submit-page {
+  min-height: 100vh;
+  background: #e8c469;
+}
+
+.submit-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 4vw;
+}
+
+.submit-body {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 6vw;
+  padding: 40px 8vw 100px;
+  align-items: start;
+}
+
+.submit-intro h1 {
+  font: 500 clamp(3rem, 5.4vw, 5.6rem) / 0.93 var(--serif);
+  letter-spacing: -0.06em;
+  margin: 0 0 28px;
+}
+
+.submit-intro p:not(.eyebrow),
+.submit-intro ol {
+  max-width: 420px;
+  line-height: 1.6;
+}
+
+.submit-intro ol {
+  padding-left: 20px;
+  margin: 24px 0 0;
+  font-size: 14px;
+}
+
+.submit-intro li {
+  margin-bottom: 10px;
+}
+
+.submit-card {
+  background: var(--cream);
+  padding: 44px;
+  box-shadow: 10px 10px 0 var(--orange);
+}
+
+.submit-card form {
+  display: grid;
+  gap: 16px;
+}
+
+.submit-card .eyebrow {
+  margin: 0;
+  color: var(--orange);
+}
+
+.submit-card .submit-divider {
+  margin-top: 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.submit-card label small {
+  color: #625f56;
+}
+
+.submit-card .submit-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font: 13px/1.45 var(--sans);
+}
+
+.submit-card .submit-check input {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin: 1px 0 0;
+  flex: none;
+  accent-color: var(--ink);
+}
+
+.submit-card .notice {
+  margin: 6px 0 !important;
+}
+
+.submit-card .button {
+  justify-self: start;
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.submit-card .button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.submit-card .success h2 {
+  font: 500 clamp(2.6rem, 4vw, 4rem) / 1 var(--serif);
+  letter-spacing: -0.05em;
+  margin: 0 0 14px;
+}
+
+.submit-actions {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+}
+
+.submit-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+@media (max-width: 860px) {
+  .submit-body {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 24px 6vw 70px;
+  }
+
+  .submit-card {
+    padding: 32px 22px;
+    box-shadow: 5px 5px 0 var(--orange);
+  }
+}

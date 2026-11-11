@@ -98,6 +98,33 @@ export type CustomRequest = {
   updated_at: string;
 };
 
+export type SubmissionStatus = "new" | "approved" | "declined";
+
+/** External artist submission — contains contact details, admin only */
+export type ArtworkSubmission = {
+  id: string;
+  reference_number: string;
+  artist_name: string;
+  phone: string;
+  email: string | null;
+  artist_bio: string | null;
+  title: string;
+  medium: string;
+  dimensions: string;
+  story: string;
+  asking_price: number | null;
+  currency: string;
+  image_path: string;
+  rights_confirmed: boolean;
+  status: SubmissionStatus;
+  artwork_id: string | null;
+  admin_notes: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export function inventoryLabel(status: InventoryStatus): string {
   switch (status) {
     case "available":

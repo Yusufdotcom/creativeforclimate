@@ -1,4 +1,4 @@
-export function createReferenceNumber(prefix: "ORD" | "REQ"): string {
+export function createReferenceNumber(prefix: "ORD" | "REQ" | "SUB"): string {
   const now = new Date();
   const stamp = [
     now.getUTCFullYear(),

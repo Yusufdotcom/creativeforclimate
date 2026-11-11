@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import { submitCustomRequest } from "@/app/actions/custom-requests";
+import { submitHormuudOrder } from "@/app/actions/orders";
 import { EVENTS } from "@/lib/events";
 import { SITE_PHOTOS } from "@/lib/site-photos";
 import type { PublicArtwork } from "@/lib/types";
@@ -13,8 +15,8 @@ type Props = {
   whatsappNumber: string;
 };
 
-function openWhatsApp(number: string, message: string) {
-  window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+function whatsappHref(number: string, message: string) {
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
 function ArtCard({ art, onSelect }: { art: PublicArtwork; onSelect: (a: PublicArtwork) => void }) {
@@ -54,11 +56,13 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
   const [menu, setMenu] = useState(false);
   const [selected, setSelected] = useState<PublicArtwork | null>(null);
   const [payment, setPayment] = useState<PublicArtwork | null>(null);
-  const [orderResult, setOrderResult] = useState<{ referenceNumber: string; message: string } | null>(null);
+  const [orderResult, setOrderResult] = useState<{ referenceNumber: string; message: string; whatsappUrl: string } | null>(null);
   const [orderError, setOrderError] = useState<string | null>(null);
+  const [submittingOrder, setSubmittingOrder] = useState(false);
   const [requestOpen, setRequestOpen] = useState(false);
-  const [requestResult, setRequestResult] = useState<{ referenceNumber: string; message: string } | null>(null);
+  const [requestResult, setRequestResult] = useState<{ referenceNumber: string; message: string; whatsappUrl: string } | null>(null);
   const [requestError, setRequestError] = useState<string | null>(null);
+  const [submittingRequest, setSubmittingRequest] = useState(false);
   const [artworks, setArtworks] = useState(initialArtworks);
 
   const firstAvailable = useMemo(
@@ -66,25 +70,46 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
     [artworks]
   );
 
-  const onSubmitOrder = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmitOrder = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!payment) return;
     const formData = new FormData(e.currentTarget);
-    openWhatsApp(whatsappNumber, `Salaam Creative for Climate!\n\nI would like to buy an artwork.\n\nArtwork: ${payment.title}\nArtist: ${payment.artist}\nPrice: $${payment.price} ${payment.currency}\nHormuud payment number: ${hormuudNumber}\nMy Hormuud number: ${String(formData.get("buyerPhone") || "")}\nEmail: ${String(formData.get("buyerEmail") || "Not provided")}\n\nI have completed payment / would like payment instructions. Please verify my order manually.`);
-    setOrderResult({
-      referenceNumber: "WHATSAPP",
-      message: "Your WhatsApp message has opened. Our team will manually confirm payment and availability before reserving the artwork.",
-    });
+    formData.set("artworkId", payment.id);
+    setOrderError(null);
+    setSubmittingOrder(true);
+    try {
+      const result = await submitHormuudOrder(formData);
+      if (!result.ok) {
+        setOrderError(result.error);
+        return;
+      }
+      const message = `Salaam Creative for Climate!\n\nI submitted an order.\nReference: ${result.referenceNumber}\nArtwork: ${payment.title}\nArtist: ${payment.artist}\nPrice: $${payment.price} ${payment.currency}\nHormuud payment number: ${hormuudNumber}\nMy Hormuud number: ${String(formData.get("buyerPhone") || "")}\nEmail: ${String(formData.get("buyerEmail") || "Not provided")}\n\nPlease confirm payment manually.`;
+      setOrderResult({ ...result, whatsappUrl: whatsappHref(whatsappNumber, message) });
+    } catch {
+      setOrderError("Could not submit the order. Please try again.");
+    } finally {
+      setSubmittingOrder(false);
+    }
   };
 
-  const onSubmitRequest = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmitRequest = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    openWhatsApp(whatsappNumber, `Salaam Creative for Climate!\n\nI would like to request custom art.\n\nWhat I want: ${String(formData.get("requestedArtwork") || "")}\nTheme/message: ${String(formData.get("themeMessage") || "")}\nPreferred size: ${String(formData.get("preferredSize") || "")}\nStyle: ${String(formData.get("style") || "")}\nBudget: $${String(formData.get("budget") || "Not stated")}\nDeadline: ${String(formData.get("deadline") || "Not stated")}\nName: ${String(formData.get("name") || "")}\nPhone: ${String(formData.get("phone") || "")}\nEmail: ${String(formData.get("email") || "Not provided")}`);
-    setRequestResult({
-      referenceNumber: "WHATSAPP",
-      message: "Your WhatsApp message has opened. We will follow up to discuss the idea, timing and price.",
-    });
+    setRequestError(null);
+    setSubmittingRequest(true);
+    try {
+      const result = await submitCustomRequest(formData);
+      if (!result.ok) {
+        setRequestError(result.error);
+        return;
+      }
+      const message = `Salaam Creative for Climate!\n\nI submitted a custom art request.\nReference: ${result.referenceNumber}\nWhat I want: ${String(formData.get("requestedArtwork") || "")}\nTheme/message: ${String(formData.get("themeMessage") || "")}\nPreferred size: ${String(formData.get("preferredSize") || "")}\nStyle: ${String(formData.get("style") || "")}\nBudget: $${String(formData.get("budget") || "Not stated")}\nDeadline: ${String(formData.get("deadline") || "Not stated")}\nName: ${String(formData.get("name") || "")}\nPhone: ${String(formData.get("phone") || "")}\nEmail: ${String(formData.get("email") || "Not provided")}`;
+      setRequestResult({ ...result, whatsappUrl: whatsappHref(whatsappNumber, message) });
+    } catch {
+      setRequestError("Could not submit your request. Please try again.");
+    } finally {
+      setSubmittingRequest(false);
+    }
   };
 
   return (
@@ -102,6 +127,7 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
           <a href="#gallery">Gallery</a>
           <a href="#events">Events</a>
           <a href="#contact">Connect</a>
+          <a href="/submit">Submit your art</a>
         </div>
       </nav>
 
@@ -288,6 +314,11 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
           >
             Request custom art <span>↗</span>
           </button>
+          <p>
+            <a className="text-link" href="/submit">
+              Are you an artist? Submit your artwork <span>→</span>
+            </a>
+          </p>
         </div>
       </section>
 
@@ -439,6 +470,9 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
                 <p>
                   {orderResult.message}
                 </p>
+                <a className="button dark" href={orderResult.whatsappUrl} target="_blank" rel="noreferrer">
+                  Continue in WhatsApp <span>↗</span>
+                </a>
                 <button
                   className="button dark"
                   onClick={() => {
@@ -466,8 +500,8 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
                   <p>Return here to tell us you have paid.</p>
                 </div>
                 <p className="notice">
-                  This is a manual payment flow. Clicking “Waan bixiyay” opens WhatsApp with your order details. Payment is never
-                  automatically verified; Creative for Climate will confirm it manually.
+                  Submit your order first. The artwork is reserved while payment is reviewed; payment is never automatically
+                  verified. You can then message the studio on WhatsApp.
                 </p>
                 <form onSubmit={onSubmitOrder}>
                   <label>
@@ -482,8 +516,9 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
                     Email <small>(optional)</small>
                     <input placeholder="you@email.com" type="email" name="buyerEmail" />
                   </label>
-                  <button className="button dark" type="submit">
-                    Waan bixiyay on WhatsApp <span>→</span>
+                  {orderError ? <p className="form-error" role="alert">{orderError}</p> : null}
+                  <button className="button dark" type="submit" disabled={submittingOrder}>
+                    {submittingOrder ? "Submitting…" : "Submit order"} <span>→</span>
                   </button>
                 </form>
               </>
@@ -514,6 +549,9 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
                   Reference <b>{requestResult.referenceNumber}</b>
                 </p>
                 <p>{requestResult.message}</p>
+                <a className="button dark" href={requestResult.whatsappUrl} target="_blank" rel="noreferrer">
+                  Continue in WhatsApp <span>↗</span>
+                </a>
                 <button className="button dark" onClick={() => setRequestOpen(false)}>
                   Close
                 </button>
@@ -569,8 +607,9 @@ export default function HomeExperience({ artworks: initialArtworks, contactEmail
                     Your request will be reviewed by Khadra or a suitable artist. We will contact you to discuss feasibility, price
                     and timeline before anything is confirmed.
                   </p>
-                  <button className="button dark">
-                    Send on WhatsApp <span>↗</span>
+                  {requestError ? <p className="form-error" role="alert">{requestError}</p> : null}
+                  <button className="button dark" type="submit" disabled={submittingRequest}>
+                    {submittingRequest ? "Submitting…" : "Submit request"} <span>↗</span>
                   </button>
                 </form>
               </>

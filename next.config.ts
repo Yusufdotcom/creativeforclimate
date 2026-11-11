@@ -5,6 +5,12 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
   : undefined;
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // Allows the 50 MiB private-original bucket limit plus multipart overhead.
+      bodySizeLimit: "51mb",
+    },
+  },
   images: {
     remotePatterns: supabaseHost
       ? [
